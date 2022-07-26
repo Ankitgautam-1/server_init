@@ -1,24 +1,36 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
-import authRoute, { authorization, test } from "./routes/auth";
+import authRoute from "./routes/auth";
 import helmet from "helmet";
-const PORT = 3001;
+import mongoose from "mongoose";
+import dotenv from "dotenv";
 const app = express();
+dotenv.config();
+app.use(express.json({ limit: "50mb" }));
 app.use(cors());
 app.use(helmet({ noSniff: true }));
-app.use(
-  express.json({
-    limit: "10mb",
-  })
-);
-app.use("/api/auth", authRoute);
-app.get("/", (req: Request, res: Response) => {
-  res.send("Server is up");
-});
-app.get("/api/getData", test, (req: Request, res: Response) => {
-  res.send("getData");
-});
 
-app.listen(PORT, () => {
-  console.log(`Server started at port http://localhost:${PORT}`);
-});
+const mongourl = process.env.MONGO_URL ?? "";
+
+const port = process.env.PORT;
+const db = process.env.DB_NAME;
+const options = {
+  dbName: db,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+};
+mongoose
+  .connect(mongourl, options)
+  .then((con) => {
+    app.get("/", async (req, res) => {
+      res.send({ ok: true, message: "server is online" });
+    });
+    // console.log("connection", con);
+    app.use(authRoute);
+    app.listen(port, () => {
+      console.log("Server is online port:", `http://localhost:${port}`);
+    });
+  })
+  .catch((err) => {
+    console.log("connection Error", err);
+  });

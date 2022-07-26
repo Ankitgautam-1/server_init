@@ -1,13 +1,17 @@
-# GET http://localhost:3001
-# Content-Type: application/json
+# #!Sign In
+POST http://localhost:3001/api/v1/signin
+Content-Type: application/json
 
-# POST http://localhost:3001/api/auth/login
+{
+  "email":"test@test.com",
+  "password":"test123"
+}
+# #!Sign Up
+
+# POST http://localhost:3001/api/v1/signup
 # Content-Type: application/json
 
 # {
-#   "email": "admin",
-#   "password": "admin"
+#   "email":"test@test.com",
+#   "password":"test123"
 # }
-
-GET http://localhost:3001/api/getData
-Content-Type: application/json
