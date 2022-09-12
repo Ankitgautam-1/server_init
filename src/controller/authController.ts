@@ -35,7 +35,7 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
                 error: "incorrect password",
               });
             } else {
-              res.status(201).json({ ok: true, user: user });
+              res.status(200).json({ ok: true, user: user });
             }
           }
         );
