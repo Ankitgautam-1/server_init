@@ -10,7 +10,7 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
   console.log("email:", email, " password", password);
   try {
     const validation: Joi.ValidationResult<any> = authSchema.validate(req.body);
-    console.log("validation", validation);
+    console.log("validation", validation.value.password);
 
     if (!validation.error) {
       const user = await UserModel.findOne({
@@ -29,13 +29,13 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
           validation.value.password,
           user.password ?? "",
           async (err, result) => {
-            if (!result) {
+            if (result) {
+              res.status(200).json({ ok: true, user: user });
+            } else {
               res.status(403).send({
                 ok: false,
-                error: "incorrect password",
+                error: "incorrect password!",
               });
-            } else {
-              res.status(200).json({ ok: true, user: user });
             }
           }
         );
